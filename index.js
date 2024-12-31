@@ -35,6 +35,13 @@ async function run() {
             res.send(result);
         });
 
+        app.get('/all-item/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await itemCollection.findOne(query);
+            res.send(result);
+        });
+
         app.post('/all-item', async (req, res) => {
             const newItem = req.body;
             const result = await itemCollection.insertOne(newItem);
