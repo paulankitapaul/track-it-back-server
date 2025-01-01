@@ -58,8 +58,18 @@ async function run() {
         });
 
         app.post('/recovered-item', async (req, res) => {
-            const newRecover = req.body;
-            const result = await recoveredCollection.insertOne(newRecover);
+            const recoveredItem = req.body;
+
+            const query = { recoveredItem: recoveredItem.recoveredItem };
+            const alreadyExist = await recoveredCollection.findOne(query);
+
+            if (alreadyExist) {
+                return res
+                    .status(400)
+                    .send({ message: 'Item already has been recovered!' })
+            };
+
+            const result = await recoveredCollection.insertOne(recoveredItem);
             res.send(result);
         });
 
