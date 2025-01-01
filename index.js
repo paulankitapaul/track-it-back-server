@@ -27,8 +27,9 @@ async function run() {
 
         const database = client.db('trackDB');
         const itemCollection = database.collection('items');
-        // const donationCollection = client.db('trackDB').collection('recovered');
+        const recoveredCollection = client.db('trackDB').collection('recovered');
 
+        // store lost-found items
         app.get('/all-item', async (req, res) => {
             const cursor = itemCollection.find();
             const result = await cursor.toArray();
@@ -49,6 +50,18 @@ async function run() {
         });
 
 
+        // store recovered items
+        app.get('/recovered-item', async (req, res) => {
+            const cursor = recoveredCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.post('/recovered-item', async (req, res) => {
+            const newRecover = req.body;
+            const result = await recoveredCollection.insertOne(newRecover);
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
